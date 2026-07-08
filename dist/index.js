@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
-// Simple bundled action that fetches dad jokes using built-in https module
+// Simple action that fetches dad jokes using only built-in Node.js modules
 const https = require('https');
-const { setOutput, setFailed } = require('@actions/core');
 
 function getJoke() {
   return new Promise((resolve, reject) => {
@@ -34,9 +33,15 @@ async function run() {
   try {
     const joke = await getJoke();
     console.log(joke);
-    setOutput('joke', joke);
+    // Set output using GitHub Actions environment file
+    const fs = require('fs');
+    const outputPath = process.env.GITHUB_OUTPUT;
+    if (outputPath) {
+      fs.appendFileSync(outputPath, `joke=${joke}\n`);
+    }
   } catch (error) {
-    setFailed(error.message);
+    console.error(error);
+    process.exit(1);
   }
 }
 
