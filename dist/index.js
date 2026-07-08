@@ -1,32 +1,15 @@
 #!/usr/bin/env node
 
-// Simple action that fetches dad jokes using only built-in Node.js modules
-const https = require('https');
-
-function getJoke() {
-  return new Promise((resolve, reject) => {
-    const options = {
-      hostname: 'icanhazdadjoke.com',
-      path: '/',
-      headers: {
-        'Accept': 'application/json',
-        'User-Agent': 'Writing JavaScript action GitHub Skills exercise.'
-      }
-    };
-
-    https.get(options, (res) => {
-      let data = '';
-      res.on('data', (chunk) => { data += chunk; });
-      res.on('end', () => {
-        try {
-          const joke = JSON.parse(data).joke;
-          resolve(joke);
-        } catch (e) {
-          reject(e);
-        }
-      });
-    }).on('error', reject);
+// Simple action that fetches dad jokes using fetch API (Node.js 18+)
+async function getJoke() {
+  const response = await fetch('https://icanhazdadjoke.com/', {
+    headers: {
+      'Accept': 'application/json',
+      'User-Agent': 'Writing JavaScript action GitHub Skills exercise.'
+    }
   });
+  const data = await response.json();
+  return data.joke;
 }
 
 async function run() {
