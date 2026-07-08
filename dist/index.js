@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-// Minimal bundled action that fetches dad jokes
+// Simple bundled action that fetches dad jokes using built-in https module
 const https = require('https');
-const core = require('@actions/core');
+const { setOutput, setFailed } = require('@actions/core');
 
 function getJoke() {
   return new Promise((resolve, reject) => {
@@ -34,9 +34,9 @@ async function run() {
   try {
     const joke = await getJoke();
     console.log(joke);
-    core.setOutput('joke', joke);
+    setOutput('joke', joke);
   } catch (error) {
-    core.setFailed(error.message);
+    setFailed(error.message);
   }
 }
 
